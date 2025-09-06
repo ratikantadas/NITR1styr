@@ -25,9 +25,6 @@ label{display:block;margin-bottom:6px;font-weight:600}
 .answers input{accent-color:var(--accent)}
 #resultBox{margin-top:16px;padding:14px;border-radius:8px;display:none}
 .result-normal{background:#e6f4ea;border:1px solid #c6e7cf}
-.result-medium{background:#fff7e6;border:1px solid #ffe6b8}
-.result-high{background:#fff3e6;border:1px solid #ffd0b3}
-.result-risky{background:#fff0f0;border:1px solid #ffbdbd}
 .progress{margin:10px 0;font-size:0.9rem;color:var(--muted);text-align:right}
 </style>
 </head>
@@ -141,29 +138,29 @@ const collectionRef = collection(db,"nitrPersonalityQuiz");
 const WA_NUMBER="919337611446";
 
 const questions = [
-["Do you often feel anxious about the outcome of your efforts?","BG 2.47 — Focus on your duty; do not fixate on outcomes."],
-["How balanced do you remain after success or failure?","BG 2.48 — Equanimity in success and failure brings peace."],
-["Do you struggle to control your attention under pressure?","BG 6.6 — A disciplined mind is your best ally."],
-["Do you worry about matters outside your control?","BG 18.66 — Steadying the mind reduces unnecessary anxiety."],
-["Do you feel irritation or anger in small situations?","BG 2.63 — Anger clouds judgment; managing it reduces stress."],
-["How often do you lose focus while working?","BG 6.26 — Train the mind to return to the task at hand."],
-["Do sleep disturbances happen frequently because of worry?","BG 6.17 — A balanced routine supports stability."],
-["Do you act without a sense of purpose often?","BG 3.19 — Acting with purpose and without attachment reduces anxiety."],
-["Do you feel restless even when tasks are completed?","BG 14.26 — Rising above disturbances creates lasting calm."],
-["Do you feel you lack inner resilience for challenges?","BG 18.58 — Cultivating inner wisdom builds resilience."]
+["Do you often feel anxious about the outcome of your efforts?","BG 2.47 — Focus on your duty; do not fixate on outcomes.","क्या आप अक्सर अपने प्रयासों के परिणाम को लेकर चिंतित रहते हैं?"],
+["How balanced do you remain after success or failure?","BG 2.48 — Equanimity in success and failure brings peace.","सफलता या असफलता के बाद आप कितने संतुलित रहते हैं?"],
+["Do you struggle to control your attention under pressure?","BG 6.6 — A disciplined mind is your best ally.","क्या दबाव की स्थिति में आप अपना ध्यान नियंत्रित करने में कठिनाई महसूस करते हैं?"],
+["Do you worry about matters outside your control?","BG 18.66 — Steadying the mind reduces unnecessary anxiety.","क्या आप उन बातों की चिंता करते हैं जो आपके नियंत्रण से बाहर हैं?"],
+["Do you feel irritation or anger in small situations?","BG 2.63 — Anger clouds judgment; managing it reduces stress.","क्या आप छोटी-छोटी बातों पर चिड़चिड़े या गुस्से में हो जाते हैं?"],
+["How often do you lose focus while working?","BG 6.26 — Train the mind to return to the task at hand.","काम करते समय आप कितनी बार ध्यान भटका देते हैं?"],
+["Do sleep disturbances happen frequently because of worry?","BG 6.17 — A balanced routine supports stability.","क्या चिंता के कारण आपकी नींद बार-बार disturbed होती है?"],
+["Do you act without a sense of purpose often?","BG 3.19 — Acting with purpose and without attachment reduces anxiety.","क्या आप अक्सर बिना किसी स्पष्ट उद्देश्य के कार्य करते हैं?"],
+["Do you feel restless even when tasks are completed?","BG 14.26 — Rising above disturbances creates lasting calm.","क्या कार्य पूरा होने के बाद भी आप बेचैन महसूस करते हैं?"],
+["Do you feel you lack inner resilience for challenges?","BG 18.58 — Cultivating inner wisdom builds resilience.","क्या आपको लगता है कि चुनौतियों का सामना करने के लिए आपके भीतर दृढ़ता की कमी है?"]
 ];
 
 const qWrap=document.getElementById("questions");
 questions.forEach((q,i)=>{
   qWrap.innerHTML+=`
   <div class="question">
-    <label>${i+1}. ${q[0]}</label>
+    <label>${i+1}. ${q[0]} <br><em style="color:#555">${q[2]}</em></label>
     <div class="gita">${q[1]}</div>
     <div class="answers">
-      <label><input name="q${i+1}" type="radio" value="10"> Rarely</label>
-      <label><input name="q${i+1}" type="radio" value="20"> Sometimes</label>
-      <label><input name="q${i+1}" type="radio" value="30"> Often</label>
-      <label><input name="q${i+1}" type="radio" value="40"> Always</label>
+      <label><input name="q${i+1}" type="radio" value="10"> Rarely / <em>बहुत कम</em> <span style="color:#666">(लगभग नहीं होता)</span></label>
+      <label><input name="q${i+1}" type="radio" value="20"> Sometimes / <em>कभी-कभी</em> <span style="color:#666">(बीच-बीच में होता है)</span></label>
+      <label><input name="q${i+1}" type="radio" value="30"> Often / <em>अक्सर</em> <span style="color:#666">(ज्यादातर होता है)</span></label>
+      <label><input name="q${i+1}" type="radio" value="40"> Always / <em>हमेशा</em> <span style="color:#666">(लगभग हर बार)</span></label>
     </div>
   </div>`;
 });
@@ -201,7 +198,17 @@ form.addEventListener("submit",async e=>{
    total+=parseInt(r.value);
  }
  const percent=Math.round(total/400*100);
- let category= (percent<40)?"Balanced":(percent<60)?"Growing":(percent<80)?"Challenged":"Needs Guidance";
+
+ let category;
+ if (percent < 40) {
+   category = "Balanced / संतुलित — आपकी जीवनशैली और सोच अभी संतुलित है।";
+ } else if (percent < 60) {
+   category = "Growing / विकासशील — आपमें सुधार की संभावना है, और छोटे-छोटे बदलाव मदद करेंगे।";
+ } else if (percent < 80) {
+   category = "Challenged / चुनौतीपूर्ण — आपको कई बार कठिनाइयाँ महसूस होती हैं; सही मार्गदर्शन से सुधार होगा।";
+ } else {
+   category = "Needs Guidance / मार्गदर्शन आवश्यक — आपके लिए अभी मार्गदर्शन और सहारा लेना बहुत ज़रूरी है।";
+ }
 
  const data={
    name:document.getElementById("name").value,
@@ -236,6 +243,7 @@ Please keep me updated about hostel events & guidance programmes.`;
  resultBox.className="result-normal";
  resultBox.innerHTML=`<h3>Your Personality & Lifestyle Insights</h3>
  <p>✅ Thank you for registering! You will be notified about upcoming hostel events, workshops & mentorship programmes.</p>
+ <p><strong>Your Score:</strong> ${percent}% — ${category}</p>
  <p><a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(prefill)}" target="_blank">
  <button class="btn">📲 Send My Details on WhatsApp</button></a></p>`;
  if (data.courseInterest === "Yes") {
