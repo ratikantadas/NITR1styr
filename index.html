@@ -155,13 +155,13 @@ questions.forEach((q,i)=>{
   qWrap.innerHTML+=`
   <div class="question">
     <label>${i+1}. ${q[0]} <br><em style="color:#555">${q[2]}</em></label>
-    <div class="gita">${q[1]}</div>
     <div class="answers">
-      <label><input name="q${i+1}" type="radio" value="10"> Rarely / <em>बहुत कम</em> <span style="color:#666">(लगभग नहीं होता)</span></label>
-      <label><input name="q${i+1}" type="radio" value="20"> Sometimes / <em>कभी-कभी</em> <span style="color:#666">(बीच-बीच में होता है)</span></label>
-      <label><input name="q${i+1}" type="radio" value="30"> Often / <em>अक्सर</em> <span style="color:#666">(ज्यादातर होता है)</span></label>
-      <label><input name="q${i+1}" type="radio" value="40"> Always / <em>हमेशा</em> <span style="color:#666">(लगभग हर बार)</span></label>
+      <label><input name="q${i+1}" type="radio" value="10"> Rarely / <em>बहुत कम</em></label>
+      <label><input name="q${i+1}" type="radio" value="20"> Sometimes / <em>कभी-कभी</em></label>
+      <label><input name="q${i+1}" type="radio" value="30"> Often / <em>अक्सर</em></label>
+      <label><input name="q${i+1}" type="radio" value="40"> Always / <em>हमेशा</em></label>
     </div>
+    <div class="gita">${q[1]}</div>
   </div>`;
 });
 
