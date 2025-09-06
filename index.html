@@ -26,6 +26,9 @@ label{display:block;margin-bottom:6px;font-weight:600}
 #resultBox{margin-top:16px;padding:14px;border-radius:8px;display:none}
 .result-normal{background:#e6f4ea;border:1px solid #c6e7cf}
 .progress{margin:10px 0;font-size:0.9rem;color:var(--muted);text-align:right}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+th,td{border:1px solid #ccc;padding:6px;text-align:center}
+th{background:#f1f7ff}
 </style>
 </head>
 <body>
@@ -117,9 +120,33 @@ You will be notified about our further activities, workshops, and mentorship pro
 
 <div id="resultBox" role="region" aria-live="polite"></div>
 
+<!-- Live Stats Board -->
+<div id="liveStats" class="card" style="margin-top:16px;display:none">
+  <h3 style="margin-top:0">Community Live Statistics</h3>
+  <div class="stats-grid">
+    <div>
+      <p><strong>Total Submissions:</strong> <span id="totalCount">0</span></p>
+      <p><strong>Distribution:</strong></p>
+      <ul id="distribution" class="small" style="text-align:left"></ul>
+    </div>
+    <div>
+      <p><strong>Average Lifestyle % (by Age & Gender)</strong></p>
+      <table>
+        <thead>
+          <tr><th>Gender</th><th>0–18</th><th>18–25</th><th>26–35</th><th>36+</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Male</td><td id="male-0-18">-</td><td id="male-18-25">-</td><td id="male-26-35">-</td><td id="male-36+">-</td></tr>
+          <tr><td>Female</td><td id="female-0-18">-</td><td id="female-18-25">-</td><td id="female-26-35">-</td><td id="female-36+">-</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
@@ -201,13 +228,13 @@ form.addEventListener("submit",async e=>{
 
  let category;
  if (percent < 40) {
-   category = "Balanced / संतुलित — आपकी जीवनशैली और सोच अभी संतुलित है।";
+   category = "Balanced / संतुलित — Your lifestyle is stable and healthy.";
  } else if (percent < 60) {
-   category = "Growing / विकासशील — आपमें सुधार की संभावना है, और छोटे-छोटे बदलाव मदद करेंगे।";
+   category = "Growing / विकासशील — You are improving, small changes will help more.";
  } else if (percent < 80) {
-   category = "Challenged / चुनौतीपूर्ण — आपको कई बार कठिनाइयाँ महसूस होती हैं; सही मार्गदर्शन से सुधार होगा।";
+   category = "Challenged / चुनौतीपूर्ण — You often face difficulties; guidance will help.";
  } else {
-   category = "Needs Guidance / मार्गदर्शन आवश्यक — आपके लिए अभी मार्गदर्शन और सहारा लेना बहुत ज़रूरी है।";
+   category = "Needs Guidance / मार्गदर्शन आवश्यक — You need extra guidance and support right now.";
  }
 
  const data={
@@ -226,7 +253,7 @@ form.addEventListener("submit",async e=>{
 
  try{ await addDoc(collectionRef,data); }catch(err){console.error(err); alert("DB error");}
 
- const prefill = `Hare Krishna! 🙏 I just completed the "Discover Yourself @ NITR" quiz.
+ const prefill = `Thank you! 🙏 I just completed the "Discover Yourself @ NITR" quiz.
 • Name: ${data.name || "—"}
 • Hostel: ${data.hostel || "—"} Room: ${data.room || "—"}
 • WhatsApp: ${data.whatsapp || "—"}
@@ -247,11 +274,4 @@ Please keep me updated about hostel events & guidance programmes.`;
  <p><a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(prefill)}" target="_blank">
  <button class="btn">📲 Send My Details on WhatsApp</button></a></p>`;
  if (data.courseInterest === "Yes") {
-   resultBox.innerHTML += `<p>🎓 Thank you for your interest! You’ll be contacted soon with details about the "Discover Yourself — 6 Session Certificate Course".</p>`;
- }
- resultBox.scrollIntoView({behavior:"smooth"});
-});
-</script>
-</div>
-</body>
-</html>
+   resultBox.innerHTML += `<p>🎓 Thank you for your interest! You’ll be contacted soon with details about the "Discover Yourself — 6 Session Certificate Course".</
