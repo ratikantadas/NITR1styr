@@ -274,4 +274,83 @@ Please keep me updated about hostel events & guidance programmes.`;
  <p><a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(prefill)}" target="_blank">
  <button class="btn">📲 Send My Details on WhatsApp</button></a></p>`;
  if (data.courseInterest === "Yes") {
-   resultBox.innerHTML += `<p>🎓 Thank you for your interest! You’ll be contacted soon with details about the "Discover Yourself — 6 Session Certificate Course".</
+   resultBox.innerHTML += `<p>🎓 Thank you for your interest! You’ll be contacted soon with details about the "Discover Yourself — 6 Session Certificate Course".</ }
+ resultBox.scrollIntoView({behavior:"smooth"});
+ 
+ // Reload stats after submission
+ loadStats();
+});
+
+// =====================
+// Live Statistics Board
+// =====================
+async function loadStats(){
+  try {
+    const snapshot = await getDocs(collectionRef);
+    const rows = [];
+    snapshot.forEach(doc => rows.push(doc.data()));
+
+    // Total
+    document.getElementById("totalCount").innerText = rows.length;
+
+    // Distribution
+    const dist = {Balanced:0, Growing:0, Challenged:0, "Needs Guidance":0};
+    rows.forEach(r => {
+      if(r.category){
+        if(r.category.includes("Balanced")) dist.Balanced++;
+        else if(r.category.includes("Growing")) dist.Growing++;
+        else if(r.category.includes("Challenged")) dist.Challenged++;
+        else if(r.category.includes("Needs Guidance")) dist["Needs Guidance"]++;
+      }
+    });
+
+    document.getElementById("distribution").innerHTML = `
+      <li>Balanced: ${dist.Balanced} (${rows.length ? Math.round(dist.Balanced/rows.length*100) : 0}%)</li>
+      <li>Growing: ${dist.Growing} (${rows.length ? Math.round(dist.Growing/rows.length*100) : 0}%)</li>
+      <li>Challenged: ${dist.Challenged} (${rows.length ? Math.round(dist.Challenged/rows.length*100) : 0}%)</li>
+      <li>Needs Guidance: ${dist["Needs Guidance"]} (${rows.length ? Math.round(dist["Needs Guidance"]/rows.length*100) : 0}%)</li>
+    `;
+
+    // Average by gender & age
+    const ageGroups = ["0-18","18-25","26-35","36+"];
+    const buckets = {
+      male: {"0-18":[],"18-25":[],"26-35":[],"36+":[]},
+      female: {"0-18":[],"18-25":[],"26-35":[],"36+":[]}
+    };
+
+    rows.forEach(r => {
+      let ag = r.ageGroup || "36+";
+      if(ag.includes("0-18")) ag="0-18";
+      else if(ag.includes("18-25")) ag="18-25";
+      else if(ag.includes("26-35")) ag="26-35";
+      else ag="36+";
+
+      let g = (r.gender||"Male").toLowerCase().startsWith("f") ? "female" : "male";
+      buckets[g][ag].push(Number(r.percent||0));
+    });
+
+    function avg(arr){return arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length)+"%":"-";}
+
+    document.getElementById("male-0-18").innerText=avg(buckets.male["0-18"]);
+    document.getElementById("male-18-25").innerText=avg(buckets.male["18-25"]);
+    document.getElementById("male-26-35").innerText=avg(buckets.male["26-35"]);
+    document.getElementById("male-36+").innerText=avg(buckets.male["36+"]);
+
+    document.getElementById("female-0-18").innerText=avg(buckets.female["0-18"]);
+    document.getElementById("female-18-25").innerText=avg(buckets.female["18-25"]);
+    document.getElementById("female-26-35").innerText=avg(buckets.female["26-35"]);
+    document.getElementById("female-36+").innerText=avg(buckets.female["36+"]);
+
+    document.getElementById("liveStats").style.display = "block";
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+// Load stats on page load
+loadStats();
+</script>
+</div>
+</body>
+</html>
+
