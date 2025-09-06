@@ -39,9 +39,9 @@ Free Personality & Lifestyle Quiz for 1st Year Students
 </p>
 
 <div class="card" style="margin:12px 0;padding:14px;text-align:center;">
-Welcome to NIT Rourkela! 🎉  
-This short quiz will help you discover your personality & lifestyle habits.  
-It also registers you for **hostel cultural activities, workshops, and mentorship programmes**.  
+Attend this live quiz to evaluate your personality and improve your lifestyle habits.  
+⏱ It takes only 2–3 minutes!  
+You will be notified about our further activities, workshops, and mentorship programmes.  
 </div>
 
 <!-- Personal Info -->
@@ -100,7 +100,22 @@ It also registers you for **hostel cultural activities, workshops, and mentorshi
 <h2>Lifestyle & Mindset Reflection</h2>
 <div class="progress" id="progress">0/10 answered</div>
 <div id="questions"></div>
-<div style="text-align:center"><button class="btn" type="submit">Submit Quiz</button></div>
+
+<!-- Course Interest -->
+<div class="row" style="margin-top:16px">
+  <div style="flex:1" class="card">
+    <label>Would you like to attend the <strong>"Discover Yourself — 6 Session Certificate Course"</strong>?</label>
+    <div class="controls">
+      <button type="button" class="btn ghost" id="courseYes">Yes</button>
+      <button type="button" class="btn ghost" id="courseNo">Not now</button>
+    </div>
+    <div class="small">Selected: <span id="selCourse">—</span></div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:12px">
+  <button class="btn" type="submit">Submit Quiz</button>
+</div>
 </form>
 
 <div id="resultBox" role="region" aria-live="polite"></div>
@@ -110,18 +125,18 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebas
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDvYmVBsufaspOcfHNOASnhprlgxMZb8_I",
-  authDomain: "stresstestdb.firebaseapp.com",
-  projectId: "stresstestdb",
-  storageBucket: "stresstestdb.firebasestorage.app",
-  messagingSenderId: "770106837788",
-  appId: "1:770106837788:web:656424276d7a20833308d9",
-  measurementId: "G-NKBVWEXGD9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "YOUR_MEASUREMENT_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const collectionRef = collection(db,"nitrPersonalityQuiz"); // renamed collection
+const collectionRef = collection(db,"nitrPersonalityQuiz");
 
 const WA_NUMBER="919337611446";
 
@@ -153,6 +168,7 @@ questions.forEach((q,i)=>{
   </div>`;
 });
 
+// Progress
 function updateProgress(){
   let answered=0;
   for(let i=1;i<=10;i++){if(document.querySelector(`input[name="q${i}"]:checked`)) answered++;}
@@ -171,6 +187,8 @@ document.getElementById("genderFemale").onclick=(e)=>{setActive("#genderMale,#ge
 document.querySelectorAll("[data-age]").forEach(b=>b.onclick=(e)=>{setActive("[data-age]","selAge",b.getAttribute("data-age"))});
 document.getElementById("gitaYes").onclick=(e)=>{setActive("#gitaYes,#gitaNo","selGita","Yes")};
 document.getElementById("gitaNo").onclick=(e)=>{setActive("#gitaYes,#gitaNo","selGita","No")};
+document.getElementById("courseYes").onclick=(e)=>{setActive("#courseYes,#courseNo","selCourse","Yes")};
+document.getElementById("courseNo").onclick=(e)=>{setActive("#courseYes,#courseNo","selCourse","Not now")};
 
 // Form submit
 const form=document.getElementById("quizForm");
@@ -195,6 +213,7 @@ form.addEventListener("submit",async e=>{
    email:document.getElementById("email").value,
    hometown:document.getElementById("hometown").value,
    readsGita:document.getElementById("selGita").innerText,
+   courseInterest:document.getElementById("selCourse").innerText,
    percent,category,createdAt:new Date().toISOString()
  };
 
@@ -207,6 +226,7 @@ form.addEventListener("submit",async e=>{
 • Email: ${data.email || "—"}
 • Hometown: ${data.hometown || "—"}
 • Reads Gita?: ${data.readsGita}
+• Interested in Certificate Course?: ${data.courseInterest}
 • Balance Score: ${percent}% (${category})
 
 Please keep me updated about hostel events & guidance programmes.`;
@@ -218,6 +238,9 @@ Please keep me updated about hostel events & guidance programmes.`;
  <p>✅ Thank you for registering! You will be notified about upcoming hostel events, workshops & mentorship programmes.</p>
  <p><a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(prefill)}" target="_blank">
  <button class="btn">📲 Send My Details on WhatsApp</button></a></p>`;
+ if (data.courseInterest === "Yes") {
+   resultBox.innerHTML += `<p>🎓 Thank you for your interest! You’ll be contacted soon with details about the "Discover Yourself — 6 Session Certificate Course".</p>`;
+ }
  resultBox.scrollIntoView({behavior:"smooth"});
 });
 </script>
