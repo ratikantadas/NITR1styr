@@ -253,7 +253,7 @@ form.addEventListener("submit",async e=>{
 
  try{ await addDoc(collectionRef,data); }catch(err){console.error(err); alert("DB error");}
 
- const prefill = `Thank you! 🙏 I just completed the "Discover Yourself @ NITR" quiz.
+ const prefill = `Hare Krishna! 🙏 I just completed the "Discover Yourself @ NITR" quiz.
 • Name: ${data.name || "—"}
 • Hostel: ${data.hostel || "—"} Room: ${data.room || "—"}
 • WhatsApp: ${data.whatsapp || "—"}
@@ -274,7 +274,8 @@ Please keep me updated about hostel events & guidance programmes.`;
  <p><a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(prefill)}" target="_blank">
  <button class="btn">📲 Send My Details on WhatsApp</button></a></p>`;
  if (data.courseInterest === "Yes") {
-   resultBox.innerHTML += `<p>🎓 Thank you for your interest! You’ll be contacted soon with details about the "Discover Yourself — 6 Session Certificate Course".</ }
+   resultBox.innerHTML += `<p>🎓 Thank you for your interest! You’ll be contacted soon with details about the "Discover Yourself — 6 Session Certificate Course".</p>`;
+ }
  resultBox.scrollIntoView({behavior:"smooth"});
  
  // Reload stats after submission
@@ -312,7 +313,6 @@ async function loadStats(){
     `;
 
     // Average by gender & age
-    const ageGroups = ["0-18","18-25","26-35","36+"];
     const buckets = {
       male: {"0-18":[],"18-25":[],"26-35":[],"36+":[]},
       female: {"0-18":[],"18-25":[],"26-35":[],"36+":[]}
@@ -353,4 +353,3 @@ loadStats();
 </div>
 </body>
 </html>
-
