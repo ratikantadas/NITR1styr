@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Discover Yourself @ NITR — Free Personality & Lifestyle Quiz</title>
+<style>
+:root{--accent:#1f6feb;--muted:#6b7280;--card:#fff;--bg:#f4f6fb;}
+body{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);margin:0;padding:20px;color:#111}
+.wrap{max-width:900px;margin:16px auto;padding:20px;background:var(--card);border-radius:12px;box-shadow:0 8px 24px rgba(8,10,20,.06)}
+h1{margin:0 0 4px;color:#11436b;text-align:center}
+h2{margin-top:0;color:#11436b}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.card{background:#fff;border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(10,10,20,.04)}
+label{display:block;margin-bottom:6px;font-weight:600}
+.small{font-size:0.92rem;color:var(--muted)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.btn{padding:10px 14px;border-radius:8px;border:1px solid transparent;background:var(--accent);color:white;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border-color:rgba(31,111,235,.12)}
+.btn.ghost.active{background:var(--accent);color:#fff;}
+.question{background:#fbfdff;border-left:4px solid #cfe3ff;padding:12px;margin-bottom:12px;border-radius:8px}
+.gita{font-size:0.9rem;color:#444;margin-top:6px;font-style:italic}
+.answers{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.answers label{display:inline-flex;align-items:center;gap:8px;background:#eef3ff;padding:8px 10px;border-radius:8px;cursor:pointer}
+.answers input{accent-color:var(--accent)}
+#resultBox{margin-top:16px;padding:14px;border-radius:8px;display:none}
+.result-normal{background:#e6f4ea;border:1px solid #c6e7cf}
+.result-medium{background:#fff7e6;border:1px solid #ffe6b8}
+.result-high{background:#fff3e6;border:1px solid #ffd0b3}
+.result-risky{background:#fff0f0;border:1px solid #ffbdbd}
+.progress{margin:10px 0;font-size:0.9rem;color:var(--muted);text-align:right}
+</style>
+</head>
+<body>
+<div class="wrap" role="main">
+<h1>Discover Yourself @ NITR 🎓</h1>
+<p style="text-align:center;color:#444;margin-top:-6px">
+Free Personality & Lifestyle Quiz for 1st Year Students
+</p>
+
+<div class="card" style="margin:12px 0;padding:14px;text-align:center;">
+Welcome to NIT Rourkela! 🎉  
+This short quiz will help you discover your personality & lifestyle habits.  
+It also registers you for **hostel cultural activities, workshops, and mentorship programmes**.  
+</div>
+
+<!-- Personal Info -->
+<div class="row">
+<div style="flex:1" class="card">
+<label>Full name</label>
+<input id="name" placeholder="Your name" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef7" />
+</div>
+
+<div style="width:220px" class="card">
+<label>Gender</label>
+<div class="controls">
+<button type="button" class="btn ghost" id="genderMale">Male</button>
+<button type="button" class="btn ghost" id="genderFemale">Female</button>
+</div>
+<div class="small">Selected: <span id="selGender">—</span></div>
+</div>
+
+<div style="width:220px" class="card">
+<label>Age Group</label>
+<div class="controls">
+<button type="button" class="btn ghost" data-age="0-18">0–18</button>
+<button type="button" class="btn ghost" data-age="18-25">18–25</button>
+<button type="button" class="btn ghost" data-age="26-35">26–35</button>
+<button type="button" class="btn ghost" data-age="36+">36+</button>
+</div>
+<div class="small">Selected: <span id="selAge">—</span></div>
+</div>
+</div>
+
+<!-- Extra fields -->
+<div class="row">
+<div style="flex:1" class="card"><label>Hostel Name</label><input id="hostel" placeholder="Hostel Name" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef7" /></div>
+<div style="width:180px" class="card"><label>Room No.</label><input id="room" placeholder="Room No." style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef7" /></div>
+</div>
+
+<div class="row">
+<div style="flex:1" class="card"><label>WhatsApp Number</label><input id="whatsapp" placeholder="e.g. 919876543210" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef7" /></div>
+<div style="flex:1" class="card"><label>Email ID</label><input id="email" placeholder="Email address" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef7" /></div>
+</div>
+
+<div class="row">
+<div style="flex:1" class="card"><label>Hometown</label><input id="hometown" placeholder="Your Hometown" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef7" /></div>
+<div style="width:220px" class="card">
+<label>Do you read Gita?</label>
+<div class="controls">
+<button type="button" class="btn ghost" id="gitaYes">Yes</button>
+<button type="button" class="btn ghost" id="gitaNo">No</button>
+</div>
+<div class="small">Selected: <span id="selGita">—</span></div>
+</div>
+</div>
+
+<!-- Quiz -->
+<form id="quizForm" class="card" style="margin-top:14px">
+<h2>Lifestyle & Mindset Reflection</h2>
+<div class="progress" id="progress">0/10 answered</div>
+<div id="questions"></div>
+<div style="text-align:center"><button class="btn" type="submit">Submit Quiz</button></div>
+</form>
+
+<div id="resultBox" role="region" aria-live="polite"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDvYmVBsufaspOcfHNOASnhprlgxMZb8_I",
+  authDomain: "stresstestdb.firebaseapp.com",
+  projectId: "stresstestdb",
+  storageBucket: "stresstestdb.firebasestorage.app",
+  messagingSenderId: "770106837788",
+  appId: "1:770106837788:web:656424276d7a20833308d9",
+  measurementId: "G-NKBVWEXGD9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const collectionRef = collection(db,"nitrPersonalityQuiz"); // renamed collection
+
+const WA_NUMBER="919337611446";
+
+const questions = [
+["Do you often feel anxious about the outcome of your efforts?","BG 2.47 — Focus on your duty; do not fixate on outcomes."],
+["How balanced do you remain after success or failure?","BG 2.48 — Equanimity in success and failure brings peace."],
+["Do you struggle to control your attention under pressure?","BG 6.6 — A disciplined mind is your best ally."],
+["Do you worry about matters outside your control?","BG 18.66 — Steadying the mind reduces unnecessary anxiety."],
+["Do you feel irritation or anger in small situations?","BG 2.63 — Anger clouds judgment; managing it reduces stress."],
+["How often do you lose focus while working?","BG 6.26 — Train the mind to return to the task at hand."],
+["Do sleep disturbances happen frequently because of worry?","BG 6.17 — A balanced routine supports stability."],
+["Do you act without a sense of purpose often?","BG 3.19 — Acting with purpose and without attachment reduces anxiety."],
+["Do you feel restless even when tasks are completed?","BG 14.26 — Rising above disturbances creates lasting calm."],
+["Do you feel you lack inner resilience for challenges?","BG 18.58 — Cultivating inner wisdom builds resilience."]
+];
+
+const qWrap=document.getElementById("questions");
+questions.forEach((q,i)=>{
+  qWrap.innerHTML+=`
+  <div class="question">
+    <label>${i+1}. ${q[0]}</label>
+    <div class="gita">${q[1]}</div>
+    <div class="answers">
+      <label><input name="q${i+1}" type="radio" value="10"> Rarely</label>
+      <label><input name="q${i+1}" type="radio" value="20"> Sometimes</label>
+      <label><input name="q${i+1}" type="radio" value="30"> Often</label>
+      <label><input name="q${i+1}" type="radio" value="40"> Always</label>
+    </div>
+  </div>`;
+});
+
+function updateProgress(){
+  let answered=0;
+  for(let i=1;i<=10;i++){if(document.querySelector(`input[name="q${i}"]:checked`)) answered++;}
+  document.getElementById("progress").innerText=`${answered}/10 answered`;
+}
+document.addEventListener("change",updateProgress);
+
+// Button highlighting
+function setActive(group,sel,id){
+  document.querySelectorAll(group).forEach(b=>b.classList.remove("active"));
+  document.getElementById(sel).innerText=id;
+  event.target.classList.add("active");
+}
+document.getElementById("genderMale").onclick=(e)=>{setActive("#genderMale,#genderFemale","selGender","Male")};
+document.getElementById("genderFemale").onclick=(e)=>{setActive("#genderMale,#genderFemale","selGender","Female")};
+document.querySelectorAll("[data-age]").forEach(b=>b.onclick=(e)=>{setActive("[data-age]","selAge",b.getAttribute("data-age"))});
+document.getElementById("gitaYes").onclick=(e)=>{setActive("#gitaYes,#gitaNo","selGita","Yes")};
+document.getElementById("gitaNo").onclick=(e)=>{setActive("#gitaYes,#gitaNo","selGita","No")};
+
+// Form submit
+const form=document.getElementById("quizForm");
+form.addEventListener("submit",async e=>{
+ e.preventDefault();
+ let total=0;
+ for(let i=1;i<=10;i++){
+   const r=document.querySelector(`input[name="q${i}"]:checked`);
+   if(!r){alert("Please answer all questions."); return;}
+   total+=parseInt(r.value);
+ }
+ const percent=Math.round(total/400*100);
+ let category= (percent<40)?"Balanced":(percent<60)?"Growing":(percent<80)?"Challenged":"Needs Guidance";
+
+ const data={
+   name:document.getElementById("name").value,
+   gender:document.getElementById("selGender").innerText,
+   ageGroup:document.getElementById("selAge").innerText,
+   hostel:document.getElementById("hostel").value,
+   room:document.getElementById("room").value,
+   whatsapp:document.getElementById("whatsapp").value,
+   email:document.getElementById("email").value,
+   hometown:document.getElementById("hometown").value,
+   readsGita:document.getElementById("selGita").innerText,
+   percent,category,createdAt:new Date().toISOString()
+ };
+
+ try{ await addDoc(collectionRef,data); }catch(err){console.error(err); alert("DB error");}
+
+ const prefill = `Hare Krishna! 🙏 I just completed the "Discover Yourself @ NITR" quiz.
+• Name: ${data.name || "—"}
+• Hostel: ${data.hostel || "—"} Room: ${data.room || "—"}
+• WhatsApp: ${data.whatsapp || "—"}
+• Email: ${data.email || "—"}
+• Hometown: ${data.hometown || "—"}
+• Reads Gita?: ${data.readsGita}
+• Balance Score: ${percent}% (${category})
+
+Please keep me updated about hostel events & guidance programmes.`;
+
+ let resultBox=document.getElementById("resultBox");
+ resultBox.style.display="block";
+ resultBox.className="result-normal";
+ resultBox.innerHTML=`<h3>Your Personality & Lifestyle Insights</h3>
+ <p>✅ Thank you for registering! You will be notified about upcoming hostel events, workshops & mentorship programmes.</p>
+ <p><a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(prefill)}" target="_blank">
+ <button class="btn">📲 Send My Details on WhatsApp</button></a></p>`;
+ resultBox.scrollIntoView({behavior:"smooth"});
+});
+</script>
+</div>
+</body>
+</html>
